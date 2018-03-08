@@ -6,7 +6,7 @@
 
 // perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations sleep 5 
 
-void work();
+void work();//method stubby
 
 int main(int argc, char *argv[])
 {
@@ -23,12 +23,12 @@ int main(int argc, char *argv[])
 		wait_on[num_made] = fork_id;
 		if(fork_id == 0){//if in a child process
 			printf("calling work %d\n", num_made);
-			work();
-			break;
+			work();//do stuffs
+			break;//don't want to loop if in child proc
 		}
 	}
 
-	//in parent and need to wait
+	//in parent and need to wait for all the babies to die horrible deaths
 	if(fork_id != 0){
 		int i;
 		for(i = 0; i < num_procs; i++){
