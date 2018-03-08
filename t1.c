@@ -18,14 +18,14 @@ int main(int argc, char *argv[])
 	int wait_on[num_procs];//hold pids to wait on in main
 
 	int making_procs = 1;//start out true for needing to make more
-	int num_made;
+	int num_made;//keep track of how many procs have been made
 	int fork_id;//ret of fork
 
 	for(num_made = 0; num_made < num_procs; num_made++){
 		fork_id = fork();//fork to make new proc
 		wait_on[num_made] = fork_id;
 		if(fork_id == 0){//if in a child process
-			printf("calling work %d\n", num_made);
+			printf("calling work in proc %d\n", num_made);
 			work(num_longs, num_rounds);//do stuffs
 			break;//don't want to loop if in child proc
 		}
@@ -44,7 +44,8 @@ int main(int argc, char *argv[])
 
 //with 1,000,000 longs and 50 rounds: 1 proc = 45% cache misses, 8 procs = 71% cache misses
 
-//do work in an individual process
+//do work in an individual process 
+//num_longs makes more distinct cache refs per round, num_rounds makes more rounds of those cache refs
 void work(long num_longs, long num_rounds){
 	long *p = malloc(num_longs*(sizeof(long)));
 	long i;
@@ -56,7 +57,7 @@ void work(long num_longs, long num_rounds){
 	for(j = 0; j < num_rounds; j++){
 		for(i = 0; i < num_longs; i++){
 			//printf("%ld",p[i]); 
-			long x = p[i];//seems like it doesnt execute this loop without doing something in here?
+			long x = p[i];
 		}
 	}
 }
