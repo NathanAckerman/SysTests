@@ -4,14 +4,16 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-// perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations ./t1 num_procs num_longs 
-// usage ./t1 num_procs num_longs
-void work(long num);//method stubby
+// perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations ./t1 num_procs num_longs num_rounds
+// perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations ./t1 16 1000000 50
+// usage ./t1 num_procs num_longs num_rounds
+void work(long num_longs, long num_rounds);//method stubby
 
 int main(int argc, char *argv[])
 {
 	int num_procs = atoi(argv[1]);//number of processes to spawn to do work
-	long num_longs = atol(argv[2]);
+	long num_longs = atol(argv[2]);//number of longs (increases number of different cache refs per loop)
+	long num_rounds = atol(argv[3]);//number of rounds (increases repeats of cache refs)
 
 	int wait_on[num_procs];//hold pids to wait on in main
 
@@ -24,7 +26,7 @@ int main(int argc, char *argv[])
 		wait_on[num_made] = fork_id;
 		if(fork_id == 0){//if in a child process
 			printf("calling work %d\n", num_made);
-			work(num_longs);//do stuffs
+			work(num_longs, num_rounds);//do stuffs
 			break;//don't want to loop if in child proc
 		}
 	}
@@ -40,11 +42,10 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-//with 1,000,000 longs: 1 proc = 45% cache misses, 16 procs = 70% cache misses
+//with 1,000,000 longs and 50 rounds: 1 proc = 45% cache misses, 8 procs = 71% cache misses
 
 //do work in an individual process
-void work(long num){
-	long num_longs = num;
+void work(long num_longs, long num_rounds){
 	long *p = malloc(num_longs*(sizeof(long)));
 	long i;
 	for(i = 0; i < num_longs; i++){
@@ -52,7 +53,7 @@ void work(long num){
 	}
 					
 	int j;
-	for(j = 0; j < 50; j++){
+	for(j = 0; j < num_rounds; j++){
 		for(i = 0; i < num_longs; i++){
 			//printf("%ld",p[i]); 
 			long x = p[i];//seems like it doesnt execute this loop without doing something in here?
