@@ -4,13 +4,14 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-// perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations sleep 5 
-
-void work();//method stubby
+// perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations ./t1 num_procs num_longs 
+// usage ./t1 num_procs num_longs
+void work(long num);//method stubby
 
 int main(int argc, char *argv[])
 {
-	int num_procs = 16;//number of processes to spawn to do work
+	int num_procs = atoi(argv[1]);//number of processes to spawn to do work
+	long num_longs = atol(argv[2]);
 
 	int wait_on[num_procs];//hold pids to wait on in main
 
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
 		wait_on[num_made] = fork_id;
 		if(fork_id == 0){//if in a child process
 			printf("calling work %d\n", num_made);
-			work();//do stuffs
+			work(num_longs);//do stuffs
 			break;//don't want to loop if in child proc
 		}
 	}
@@ -42,8 +43,8 @@ int main(int argc, char *argv[])
 //with 1,000,000 longs: 1 proc = 45% cache misses, 16 procs = 70% cache misses
 
 //do work in an individual process
-void work(){
-	long num_longs = 1000000;
+void work(long num){
+	long num_longs = num;
 	long *p = malloc(num_longs*(sizeof(long)));
 	long i;
 	for(i = 0; i < num_longs; i++){
