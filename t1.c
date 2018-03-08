@@ -39,11 +39,11 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+//with 1,000,000 longs: 1 proc = 45% cache misses, 16 procs = 70% cache misses
 
-//100000 = 10% cache misses, 10000 = 43%, 1000000 = 49%, 100000000 = 77%
 //do work in an individual process
 void work(){
-	long num_longs = 10000000;
+	long num_longs = 1000000;
 	long *p = malloc(num_longs*(sizeof(long)));
 	long i;
 	for(i = 0; i < num_longs; i++){
@@ -54,7 +54,7 @@ void work(){
 	for(j = 0; j < 50; j++){
 		for(i = 0; i < num_longs; i++){
 			//printf("%ld",p[i]); 
-			long x = p[i];
+			long x = p[i];//seems like it doesnt execute this loop without doing something in here?
 		}
 	}
 }
