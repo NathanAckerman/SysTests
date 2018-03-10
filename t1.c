@@ -4,9 +4,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-// perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations ./t1 num_procs num_longs num_rounds
-// perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations ./t1 16 1000000 50
-// usage ./t1 num_procs num_longs num_rounds
+//perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations ./t1 num_procs num_longs num_rounds
+//aka perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations ./t1 16 1000000 50
+//standalone usage ./t1 num_procs num_longs num_rounds
 void work(long num_longs, long num_rounds);//method stubby
 
 int main(int argc, char *argv[])
@@ -38,7 +38,6 @@ int main(int argc, char *argv[])
 			waitpid(wait_on[i], NULL, 0);
 		}
 	}
-
 	return 0;
 }
 
@@ -49,13 +48,13 @@ int main(int argc, char *argv[])
 void work(long num_longs, long num_rounds){
 	long *p = malloc(num_longs*(sizeof(long)));
 	long i;
-	for(i = 0; i < num_longs; i++){
+	for(i = 0; i < num_longs; i++){//set up some values in memory
 		p[i] = i; 
 	}
 					
 	int j;
-	for(j = 0; j < num_rounds; j++){
-		for(i = 0; i < num_longs; i++){
+	for(j = 0; j < num_rounds; j++){//loop through memory num_rounds times
+		for(i = 0; i < num_longs; i++){//loop through memory
 			//printf("%ld",p[i]); 
 			long x = p[i];
 		}
