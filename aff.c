@@ -1,9 +1,10 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
+#include <sched.h>
 //perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations ./t1 num_procs num_longs num_rounds
 //aka perf stat -B -e cache-references,cache-misses,cycles,instructions,branches,faults,migrations ./t1 16 1000000 50
 //standalone usage ./t1 num_procs num_longs num_rounds
@@ -26,6 +27,10 @@ int main(int argc, char *argv[])
 		wait_on[num_made] = fork_id;
 		if(fork_id == 0){//if in a child process
 			printf("Starting work in process %d.\n", num_made);
+			cpu_set_t mask;
+			CPU_ZERO(&mask);
+			CPU_SET(0, &mask);
+			sched_setaffinity(0, sizeof(mask), &mask);
 			work(num_longs, num_rounds);//do stuffs
 			break;//don't want to loop if in child proc
 		}
@@ -46,6 +51,7 @@ int main(int argc, char *argv[])
 //do work in an individual process 
 //num_longs makes more distinct cache refs per round, num_rounds makes more rounds of those cache refs
 void work(long num_longs, long num_rounds){
+	printf("made it into work");
 	long *p = malloc(num_longs*(sizeof(long)));
 	long i;
 	for(i = 0; i < num_longs; i++){//set up some values in memory
