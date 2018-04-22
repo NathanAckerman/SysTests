@@ -51,7 +51,6 @@ int main(int argc, char *argv[])
 //do work in an individual process 
 //num_longs makes more distinct cache refs per round, num_rounds makes more rounds of those cache refs
 void work(long num_longs, long num_rounds){
-	printf("made it into work");
 	long *p = malloc(num_longs*(sizeof(long)));
 	long i;
 	for(i = 0; i < num_longs; i++){//set up some values in memory
