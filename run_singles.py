@@ -34,26 +34,28 @@ def main():
     total_sys = 0
 
     for x in f:
-        print(x)
+        print("\n\n******** Line: "+x+"**")
         try:
             splitt = x.split("\t")
             print(splitt)
             cat = splitt[0]
             time = splitt[1]
             print("cat: "+cat)
-            print("time: "+time)
+            print("time whole: "+time)
             
             time_split = time[2:7]
 
             if cat == "real":
-                print("time: "+ time_split)
-                total_real += int(time_split)
+                print("time split: "+ time_split)
+                print(float(time_split))
+                total_real += float(time_split)
+                print("total*****"+str(total_real))
             elif cat == "user":
-                print("time: "+ time_split)
-                total_user += int(time_split)
+                print("time split: "+ time_split)
+                total_user += float(time_split)
             elif cat == "sys":
-                print("time: "+ time_split)
-                total_sys += int(time_split)
+                print("time split: "+ time_split)
+                total_sys += float(time_split)
 
             else:
                 print("other cat")
@@ -62,12 +64,12 @@ def main():
             print("skip empty line")
 
 
-        ##############################
-        print("total real: "+total_real)
+    ##############################
+    print("total real: "+str(total_real))
 
-        print("total user: "+total_user)
+    print("total user: "+str(total_user))
 
-        print("total sys: "+total_sys)
+    print("total sys: "+str(total_sys))
 
 
 if __name__ == "__main__":
