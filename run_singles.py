@@ -43,18 +43,19 @@ def main():
             print("cat: "+cat)
             print("time whole: "+time)
             
-            time_split = time[2:7]
+            arr = time.split("m")
+            time_split = float(arr[0])*60 + float(arr[1].split("s")[0])
 
             if cat == "real":
-                print("time split: "+ time_split)
+                print("time split: "+ str(time_split))
                 print(float(time_split))
                 total_real += float(time_split)
                 print("total*****"+str(total_real))
             elif cat == "user":
-                print("time split: "+ time_split)
+                print("time split: "+ str(time_split))
                 total_user += float(time_split)
             elif cat == "sys":
-                print("time split: "+ time_split)
+                print("time split: "+ str(time_split))
                 total_sys += float(time_split)
 
             else:
@@ -66,11 +67,16 @@ def main():
 
     ##############################
     print("total real: "+str(total_real))
+    avg_real = total_real/float(num_tests)
+    print("avg: "+str(avg_real))
 
     print("total user: "+str(total_user))
+    avg_user = total_user/float(num_tests)
+    print("avg: "+str(avg_user))
 
     print("total sys: "+str(total_sys))
-
+    avg_sys = total_sys/float(num_tests)
+    print("avg: "+str(avg_sys))
 
 if __name__ == "__main__":
     main()
